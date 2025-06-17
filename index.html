@@ -28,6 +28,62 @@
       padding: 20px;
     }
 
+    /* Developer Info Styles */
+    .developer-info {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .developer-card {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      padding: 15px;
+      border: 2px solid rgba(255, 215, 0, 0.6);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      animation: developerGlow 4s infinite alternate;
+      max-width: 250px;
+    }
+
+    .developer-card h3 {
+      color: rgba(255, 215, 0, 0.9);
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      text-align: center;
+      font-family: 'Bradley Hand ITC', cursive;
+    }
+
+    .developer-card p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+      margin: 5px 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .developer-card a {
+      color: rgba(0, 255, 255, 0.9);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .developer-card a:hover {
+      color: rgba(255, 255, 0, 1);
+      text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+    }
+
+    @keyframes developerGlow {
+      0% { 
+        border-color: rgba(255, 215, 0, 0.6);
+        box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+      }
+      100% { 
+        border-color: rgba(0, 255, 255, 0.8);
+        box-shadow: 0 4px 25px rgba(0, 255, 255, 0.4);
+      }
+    }
+
     /* Header Styles */
     h1 {
       text-align: center;
@@ -257,6 +313,16 @@
 
     /* Responsive Design */
     @media (max-width: 768px) {
+      .developer-info {
+        position: static;
+        margin-bottom: 20px;
+      }
+      
+      .developer-card {
+        max-width: 90%;
+        margin: 0 auto;
+      }
+      
       .container {
         padding: 10px;
       }
@@ -303,8 +369,18 @@
   <audio id="loss sound" src="loss sound.mp3"></audio>
   <audio id="background" src="background.mp3"></audio>
 
-  <div class="container">
+      <div class="container">
     <h1>FIND THE QUEEN</h1>
+    
+    <div class="developer-info">
+      <div class="developer-card">
+        <h3>🎮 Game Developer</h3>
+        <p><strong>Bhavik Kaladiya</strong></p>
+        <p>📱 +91 9265492946</p>
+        <p>📧 bksony894@gmail.com</p>
+        <p>🎯 <a href="https://bksony.github.io/Game-of-Mathematics-/" target="_blank">Other Games</a></p>
+      </div>
+    </div>
     
     <div class="game-info">
       <div class="note-section">
