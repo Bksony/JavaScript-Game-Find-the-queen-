@@ -19,84 +19,77 @@
       box-shadow: 5px 5px 10px 5px grey;
       margin-left: 130px;
       border-radius: 10px;
-      background-color: rgba(0, 21, 255, 0.274);
+      background-color: rgba(0, 21, 255, 0.352);
       animation: colorAnimation 3s infinite;
       color: colorAnimaion 5s inherit;
     }
  
-@keyframes colorAnimation {
-     0% { box-shadow: 5px 0px 20px 10px #ff0000; } 
-    25% { box-shadow: 5px 0px 20px 10px #2bff00; } 
-    50% { box-shadow: 5px 0px 20px 10px #1100ff; } 
-    75% { box-shadow: 5px 0px 20px 10px #000000; } 
-   100% { box-shadow: 5px 0px 20px 10px #ff00dd; } 
-}
+    @keyframes colorAnimation {
+      0% { box-shadow: 5px 0px 20px 10px #ff0000; } 
+      25% { box-shadow: 5px 0px 20px 10px #2bff00; } 
+      50% { box-shadow: 5px 0px 20px 10px #1100ff; } 
+      75% { box-shadow: 5px 0px 20px 10px #000000; } 
+      100% { box-shadow: 5px 0px 20px 10px #ff00dd; } 
+    }
 
-    h1
-    {
-        position:fixed;
-        text-align: center;
-        margin-left: 500px;
-        font-family: 'Bradley Hand ITC';
-        color:rgba(255, 255, 255, 0.689);
-        /* background-color: rgb(188, 255, 2); */
-        margin-top: 10px;
-        font-size: 50px;
-        border: 10px solid rgba(186, 3, 3, 0.772);
-        border-radius: 100px;
-        padding: 10px;
-        
+    h1 {
+      position:fixed;
+      text-align: center;
+      margin-left: 500px;
+      font-family: 'Bradley Hand ITC';
+      color:rgba(255, 255, 255, 0.689);
+      margin-top: 10px;
+      font-size: 50px;
+      border: 10px solid rgba(186, 3, 3, 0.772);
+      border-radius: 100px;
+      padding: 10px;
       animation: colorAnimation 5s infinite;
-      /* color: colorAnimaion 5s inherit; */
-             
-        
-
-    }
-    button{
-        text-align: center;
-        width: 250px;
-        height: 80px;
-        /* size: px; */
-        margin-left: 670px;
-        margin-top: 5px;
-        margin-bottom: 60px;
-        background-color: rgba(255, 255, 255, 0.66);
-        border-radius: 10px;
-        font-family: Arial Black;
-      
-
-    }
-    button:hover{animation: colorAnimation 2s infinite;  
-    }
-    script{
-        text-align: center;
-        color: crimson;
-        size: 50px;
-        
-    }
-    body
-    {
-        background: url(back.jpg) no-repeat center fixed;
-        -webkit-background-size: cover;
     }
 
-    p{
-        font-size: 30px;
-        color: rgba(255, 255, 255, 0.909);
-        text-decoration:  underline 5px rgba(209, 8, 8, 0.566);
-        
-        
-        
-        
+    button {
+      text-align: center;
+      width: 250px;
+      height: 80px;
+      margin-left: 670px;
+      margin-top: 5px;
+      margin-bottom: 60px;
+      background-color: rgba(255, 255, 255, 0.66);
+      border-radius: 10px;
+      font-family: Arial Black;
     }
 
+    button:hover {
+      animation: colorAnimation 2s infinite;  
+    }
+
+    body {
+      background: url(back.jpg) no-repeat center fixed;
+      -webkit-background-size: cover;
+    }
+
+    p {
+      font-size: 30px;
+      color: rgba(255, 255, 255, 0.909);
+      text-decoration: 5px rgba(209, 8, 8, 0.566);
+      font-family: 'Bradley Hand ITC';
+      background-color: #1c127a5d;
+      border-radius: 50px;
+      border: solid 2px rgba(172, 255, 47, 0.311);
+      width: 600px;
+    }
   </style>
 </head>
 <body>
+
+
+  <audio id="win sound" src="win sound.mp3"></audio>
+  <audio id="loss sound" src="loss sound.mp3"></audio>
+  <audio id="background" src="background.mp3"></audio>
+
   <h1>FIND THE QUEEN</h1>
   <br><br><br><br><br>
   
-  <p>Note:-</p>
+  <p style="text-decoration: underline 5px rgba(255, 255, 0, 0.502);">Note:-</p>
   <p>If you get your Queen you will win 20$ </p>
   <p>There will be 2 attempts to find your Queen</p>
   <p>If you can not find your Queen you loss 30$ </p>
@@ -122,17 +115,15 @@
       });
     }
 
-
     function guess(index) {
       attempts++;
       if (index === ladyIndex && attempts === 1) {
         document.getElementById('message').textContent = `Congratulations! You Find your Queen ${attempts} attempt. You win $20!`;
-      } else if (index === ladyIndex && attempts === 1) {
-        document.getElementById('message').textContent = `Congratulations! You Find your Queen ${attempts} attempts. You win $20!`;
-      } else if (attempts > 1) {
-        document.getElementById('message').textContent = `Sorry, you've exceeded the maximum attempts. You lose $30.`;
+        document.getElementById('win sound').play(); 
+    
       } else {
         document.getElementById('message').textContent = `Sorry,Your Sweetheart was at position ${ladyIndex + 1}. You lose $30.`;
+        document.getElementById('loss sound').play();
       }
       document.querySelectorAll('.card').forEach((card, i) => {
         if (i === ladyIndex) {
