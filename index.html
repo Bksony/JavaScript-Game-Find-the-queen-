@@ -8,8 +8,8 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;}
     
     body {
-      background: url(back.jpg) no-repeat center center fixed;
-      background-size: cover;
+      /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+      background: url(back.jpg) no-repeat center center fixed ;
       min-height: 100vh;
       font-family: 'Bradley Hand ITC', cursive;
       display: flex;
@@ -21,7 +21,7 @@
     
     h1 {
       color: rgba(255, 255, 255, 0.95);
-      font-size: clamp(2rem, 5vw, 1rem);
+      font-size: clamp(2rem, 5vw, 2rem);
       border: 6px solid rgba(255, 0, 0, 0.8);
       border-radius: 30px;
       padding: 15px 30px;
@@ -181,15 +181,18 @@
     }
     
     .card.revealed {
-      background-size: cover;
-      background-position: center;
       font-size: 0;
     }
     
     .card.queen {
-      background-image: url(queen_wallpaper.jpg);
+      background: linear-gradient(145deg, rgba(255, 215, 0, 0.8), rgba(255, 140, 0, 0.6));
       border-color: rgba(255, 215, 0, 0.8);
       animation: celebration 1s ease-in-out;
+    }
+    
+    .card.queen::after {
+      content: '👑';
+      font-size: 3rem;
     }
     
     .card.wrong {
@@ -235,7 +238,6 @@
       color: rgba(0, 255, 255, 0.9);
       text-decoration: none;
     }
-
     
     @media (max-width: 768px) {
       .dev-info { position: static; margin: 20px 0; }
@@ -243,14 +245,9 @@
       .card { width: 100px; height: 150px; font-size: 2rem; }
       .score-section { flex-direction: column; gap: 10px; }
     }
-    
   </style>
 </head>
 <body>
-  <audio id="win-sound" src="win sound.mp3"></audio>
-  <audio id="loss-sound" src="loss sound.mp3"></audio>
-  <audio id="background-music" src="background.mp3" loop></audio>
-  
   <div class="dev-info" style="font-family: 'Courier New', Courier, monospace;">
     <h3>🎮 Developer</h3>
     <p><strong>Bhavik Kaladiya</strong></p>
@@ -298,91 +295,207 @@
   
   <button class="btn" onclick="resetGame()" style="display: none;" id="resetBtn">PLAY AGAIN</button>
 
-
-  <!--   
-  <div class="log-section">
-    <h3>📊 Game Log</h3>
-    <div class="input-section">
-      <button class="btn download-btn" onclick="downloadLog()">📥 DOWNLOAD LOG</button>
-      <button class="btn" onclick="clearLog()">🗑️ CLEAR LOG</button>
-    </div>
-    <div id="logDisplay"></div>
-  </div> -->
-  
 <script>
-
+// Game Variables
 let queenIndex = -1;
 let gameActive = false;
 let playerScore = 0;
 let gamesPlayed = 0;
 let currentPlayerName = '';
 
-// Hidden log management - user won't know about this
-let gameLog = [];
+// Enhanced Logging System - Global Variables
+window.QUEEN_GAME_LOG = window.QUEEN_GAME_LOG || [];
+window.QUEEN_GAME_PLAYERS = window.QUEEN_GAME_PLAYERS || {};
 let logIdCounter = 1;
 
-// Silently load existing log
-function loadLog() {
+// Initialize logging system
+function initializeLogging() {
   try {
+    // Try to load from localStorage if available
     const savedLog = JSON.parse(localStorage.getItem('queenGameLog') || '[]');
+    const savedPlayers = JSON.parse(localStorage.getItem('queenGamePlayers') || '{}');
     const savedCounter = parseInt(localStorage.getItem('queenGameLogCounter') || '1');
-    gameLog = savedLog;
+    
+    window.QUEEN_GAME_LOG = savedLog;
+    window.QUEEN_GAME_PLAYERS = savedPlayers;
     logIdCounter = savedCounter;
+    
+    console.log('🎮 Queen Game Logging System Initialized');
+    console.log('📊 Use viewLog() to see all game logs');
+    console.log('👥 Use getPlayerStats() to see player statistics');
   } catch (error) {
-    // Silent error handling
-    gameLog = [];
+    // If localStorage fails, use in-memory storage
+    window.QUEEN_GAME_LOG = [];
+    window.QUEEN_GAME_PLAYERS = {};
     logIdCounter = 1;
+    console.log('🎮 Queen Game Logging System Initialized (Memory Mode)');
   }
 }
 
-// Silently save log
-function saveLog() {
+// Save data to localStorage (if available)
+function saveLogData() {
   try {
-    localStorage.setItem('queenGameLog', JSON.stringify(gameLog));
+    localStorage.setItem('queenGameLog', JSON.stringify(window.QUEEN_GAME_LOG));
+    localStorage.setItem('queenGamePlayers', JSON.stringify(window.QUEEN_GAME_PLAYERS));
     localStorage.setItem('queenGameLogCounter', logIdCounter.toString());
   } catch (error) {
-    // Silent error handling
+    // Silent fallback - data remains in memory
   }
 }
 
-// Hidden function to add log entry
-function addLogEntry(username, score) {
-  try {
-    const now = new Date();
-    const timeString = now.toLocaleDateString('en-GB', {
-      weekday: 'short',
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
-    
-    const entry = {
-      id: logIdCounter.toString().padStart(3, '0'),
-      username: username,
-      score: score,
-      time: timeString
+// Add log entry for individual game
+function addGameLog(username, scoreChange, result) {
+  const now = new Date();
+  const timeString = now.toLocaleString('en-IN', {
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+  
+  const entry = {
+    id: logIdCounter.toString().padStart(3, '0'),
+    username: username,
+    scoreChange: scoreChange,
+    result: result, // 'win' or 'loss'
+    timestamp: now.toISOString(),
+    displayTime: timeString
+  };
+  
+  window.QUEEN_GAME_LOG.push(entry);
+  logIdCounter++;
+  saveLogData();
+}
+
+// Update player statistics
+function updatePlayerStats(username, scoreChange, result) {
+  if (!window.QUEEN_GAME_PLAYERS[username]) {
+    window.QUEEN_GAME_PLAYERS[username] = {
+      totalScore: 0,
+      gamesPlayed: 0,
+      wins: 0,
+      losses: 0,
+      firstPlayed: new Date().toISOString(),
+      lastPlayed: new Date().toISOString()
     };
+  }
+  
+  const player = window.QUEEN_GAME_PLAYERS[username];
+  player.totalScore += scoreChange;
+  player.gamesPlayed++;
+  player.lastPlayed = new Date().toISOString();
+  
+  if (result === 'win') {
+    player.wins++;
+  } else {
+    player.losses++;
+  }
+  
+  saveLogData();
+}
+
+// Console Functions for Developers/Admins
+window.viewLog = function() {
+  if (window.QUEEN_GAME_LOG.length === 0) {
+    console.log('📝 No game logs available yet');
+    return;
+  }
+  
+  console.log('🎮 QUEEN GAME - COMPLETE LOG');
+  console.log('================================');
+  console.table(window.QUEEN_GAME_LOG.map(entry => ({
+    ID: entry.id,
+    Player: entry.username,
+    Score: (entry.scoreChange > 0 ? '+' : '') + entry.scoreChange,
+    Result: entry.result.toUpperCase(),
+    DateTime: entry.displayTime
+  })));
+  
+  console.log(`📊 Total Games: ${window.QUEEN_GAME_LOG.length}`);
+  console.log(`🏆 Total Wins: ${window.QUEEN_GAME_LOG.filter(g => g.result === 'win').length}`);
+  console.log(`💔 Total Losses: ${window.QUEEN_GAME_LOG.filter(g => g.result === 'loss').length}`);
+  
+  return window.QUEEN_GAME_LOG;
+};
+
+window.getPlayerStats = function(playerName = null) {
+  if (Object.keys(window.QUEEN_GAME_PLAYERS).length === 0) {
+    console.log('👥 No player data available yet');
+    return;
+  }
+  
+  if (playerName) {
+    const player = window.QUEEN_GAME_PLAYERS[playerName];
+    if (!player) {
+      console.log(`❌ Player "${playerName}" not found`);
+      return;
+    }
     
-    gameLog.push(entry);
-    logIdCounter++;
-    saveLog();
-  } catch (error) {
-    // Silent error handling
+    console.log(`👤 PLAYER STATS: ${playerName}`);
+    console.log('================================');
+    console.log(`💰 Total Score: ₹${player.totalScore}`);
+    console.log(`🎮 Games Played: ${player.gamesPlayed}`);
+    console.log(`🏆 Wins: ${player.wins}`);
+    console.log(`💔 Losses: ${player.losses}`);
+    console.log(`📈 Win Rate: ${((player.wins / player.gamesPlayed) * 100).toFixed(1)}%`);
+    console.log(`📅 First Played: ${new Date(player.firstPlayed).toLocaleString('en-IN')}`);
+    console.log(`📅 Last Played: ${new Date(player.lastPlayed).toLocaleString('en-IN')}`);
+    
+    return player;
+  } else {
+    console.log('👥 ALL PLAYER STATISTICS');
+    console.log('================================');
+    console.table(Object.keys(window.QUEEN_GAME_PLAYERS).map(name => {
+      const player = window.QUEEN_GAME_PLAYERS[name];
+      return {
+        Player: name,
+        TotalScore: '₹' + player.totalScore,
+        Games: player.gamesPlayed,
+        Wins: player.wins,
+        Losses: player.losses,
+        WinRate: ((player.wins / player.gamesPlayed) * 100).toFixed(1) + '%'
+      };
+    }));
+    
+    return window.QUEEN_GAME_PLAYERS;
   }
-}
+};
 
-// Hidden function to save data on page unload
-function saveGameData() {
-  if (currentPlayerName && playerScore !== 0) {
-    addLogEntry(currentPlayerName, playerScore);
+window.downloadGameLog = function() {
+  if (window.QUEEN_GAME_LOG.length === 0) {
+    console.log('📝 No data to download');
+    return;
   }
-}
+  
+  const logData = {
+    generatedAt: new Date().toISOString(),
+    totalGames: window.QUEEN_GAME_LOG.length,
+    gameLog: window.QUEEN_GAME_LOG,
+    playerStats: window.QUEEN_GAME_PLAYERS
+  };
+  
+  const dataStr = JSON.stringify(logData, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `queen_game_complete_log_${new Date().getTime()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  console.log('📥 Game log downloaded successfully!');
+};
 
+// Game Logic
 function startGame() {
   const nameInput = document.getElementById('playerName');
   const playerName = nameInput.value.trim();
   
-  // Validate that user has entered a name
   if (!playerName || playerName === '') {
     alert('Please enter your name to start the game!');
     nameInput.focus();
@@ -420,22 +533,25 @@ function guess(index) {
   
   setTimeout(() => {
     let scoreChange = 0;
+    let result = '';
+    
     if (index === queenIndex) {
       scoreChange = 10;
+      result = 'win';
       playerScore += 10;
       document.getElementById('message').textContent = `🎉 Congratulations! You found the Queen! +₹10 🎉`;
       document.getElementById('message').style.background = 'rgba(0, 200, 0, 0.8)';
-      playSound('win-sound');
     } else {
       scoreChange = -10;
+      result = 'loss';
       playerScore -= 10;
       document.getElementById('message').textContent = `💔 Wrong! Queen was at position ${queenIndex + 1}. -₹10 💔`;
       document.getElementById('message').style.background = 'rgba(200, 0, 0, 0.8)';
-      playSound('loss-sound');
     }
     
-    // Silently add to log after game
-    addLogEntry(currentPlayerName, scoreChange);
+    // Log the game result
+    addGameLog(currentPlayerName, scoreChange, result);
+    updatePlayerStats(currentPlayerName, scoreChange, result);
     
     // Reveal all cards
     cards.forEach((card, i) => {
@@ -470,76 +586,35 @@ function resetGame() {
     card.style.pointerEvents = 'none';
     card.onclick = null;
   });
-  
-  pauseSound('background-music');
 }
 
-function playSound(soundId) {
-  try {
-    const sound = document.getElementById(soundId);
-    if (sound) {
-      sound.currentTime = 0;
-      sound.play().catch(e => console.log('Sound error:', e));
-    }
-  } catch (error) {
-    console.log('Sound playback error:', error);
-  }
-}
-
-function pauseSound(soundId) {
-  try {
-    const sound = document.getElementById(soundId);
-    if (sound) {
-      sound.pause();
-    }
-  } catch (error) {
-    console.log('Sound pause error:', error);
-  }
-}
-
-// Initialize game
+// Initialize everything when page loads
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('message').textContent = 'Enter your name and click START GAME to begin!';
   document.getElementById('message').style.background = 'rgba(100, 100, 100, 0.8)';
-  loadLog(); // Silently load existing log data
+  
+  // Initialize the logging system
+  initializeLogging();
 });
 
-// Silently save data when page is about to unload
-window.addEventListener('beforeunload', saveGameData);
+// Save data when page is about to unload
+window.addEventListener('beforeunload', function() {
+  saveLogData();
+});
 
-// Silently save data when page becomes hidden (mobile/tab switch)
+// Save data when page becomes hidden
 document.addEventListener('visibilitychange', function() {
   if (document.hidden) {
-    saveGameData();
+    saveLogData();
   }
 });
 
-// Hidden developer function to view log data (only accessible via browser console)
-function viewLog() {
-  console.table(gameLog);
-}
-
-// Hidden developer function to download log (only accessible via browser console)
-function downloadLogData() {
-  if (gameLog.length === 0) {
-    console.log('No log data available');
-    return;
-  }
-  
-  const logText = gameLog.map(entry => 
-    `{id: ${entry.id}, username: "${entry.username}", score: ${entry.score > 0 ? '+' : ''}${entry.score}, time: "${entry.time}"}`
-  ).join('\n');
-  
-  const blob = new Blob([logText], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'queen_game_log.txt';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-  </script>
+console.log('🎮 Queen Game Loaded Successfully!');
+console.log('📊 Available Console Commands:');
+console.log('  • viewLog() - View all game logs');
+console.log('  • getPlayerStats() - View all player statistics');
+console.log('  • getPlayerStats("PlayerName") - View specific player stats');
+console.log('  • downloadGameLog() - Download complete log as JSON file');
+</script>
 </body>
 </html>
