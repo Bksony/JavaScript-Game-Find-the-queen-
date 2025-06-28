@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<audio id="win-sound" src="win sound.mp3"></audio>
+  <audio id="loss-sound" src="loss sound.mp3"></audio>
+  <audio id="background-music" src="background.mp3" loop></audio><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -8,8 +10,8 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;}
     
     body {
-      /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
-      background: url(back.jpg) no-repeat center center fixed ;
+      background: url(back.jpg) no-repeat center center fixed;
+      background-size: cover;
       min-height: 100vh;
       font-family: 'Bradley Hand ITC', cursive;
       display: flex;
@@ -21,7 +23,7 @@
     
     h1 {
       color: rgba(255, 255, 255, 0.95);
-      font-size: clamp(2rem, 5vw, 2rem);
+      font-size: clamp(2rem, 5vw, 1rem);
       border: 6px solid rgba(255, 0, 0, 0.8);
       border-radius: 30px;
       padding: 15px 30px;
@@ -185,18 +187,23 @@
     }
     
     .card.queen {
-      background: linear-gradient(145deg, rgba(255, 215, 0, 0.8), rgba(255, 140, 0, 0.6));
+      background-image: url(queen_wallpaper.jpg);
+      background-size: cover;
+      background-position: center;
       border-color: rgba(255, 215, 0, 0.8);
       animation: celebration 1s ease-in-out;
     }
     
-    .card.queen::after {
-      content: '👑';
-      font-size: 3rem;
+    .card.queen {
+      background-image: url(queen_wallpaper.jpg);
+      background-size: cover;
+      background-position: center;
     }
     
     .card.wrong {
-      background: rgba(255, 0, 0, 0.8);
+      background-image: url(king.jpg);
+      background-size: cover;
+      background-position: center;
       font-size: 3rem;
     }
     
@@ -262,7 +269,7 @@
   <div class="game-panel">
     <div class="input-section">
       <input type="text" id="playerName" placeholder="Enter your name" maxlength="20" style="color: rgb(0, 255, 34);">
-      <button class="btn" onclick="startGame()">START GAME</button>
+      <button class="btn" onclick="startGame()"id="resetBtn" >START </button>
     </div>
     
     <div class="score-section">
@@ -293,7 +300,7 @@
     <div class="card" onclick="guess(3)">?</div>
   </div>
   
-  <button class="btn" onclick="resetGame()" style="display: none;" id="resetBtn">PLAY AGAIN</button>
+  <!-- <button class="btn" onclick="resetGame()" style="display: none;" id="resetBtn">PLAY AGAIN</button> -->
 
 <script>
 // Game Variables
