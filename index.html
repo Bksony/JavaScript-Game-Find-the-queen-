@@ -174,7 +174,6 @@
       color: white;
       font-weight: bold;
       animation: cardPulse 4s infinite;
-      
     }
     
     .card:hover {
@@ -236,6 +235,7 @@
       color: rgba(0, 255, 255, 0.9);
       text-decoration: none;
     }
+
     
     @media (max-width: 768px) {
       .dev-info { position: static; margin: 20px 0; }
@@ -243,6 +243,7 @@
       .card { width: 100px; height: 150px; font-size: 2rem; }
       .score-section { flex-direction: column; gap: 10px; }
     }
+    
   </style>
 </head>
 <body>
@@ -263,7 +264,7 @@
   
   <div class="game-panel">
     <div class="input-section">
-      <input type="text" id="playerName" placeholder="Enter your name (optional)" maxlength="20">
+      <input type="text" id="playerName" placeholder="Enter your name" maxlength="20" style="color: rgb(0, 255, 34);">
       <button class="btn" onclick="startGame()">START GAME</button>
     </div>
     
@@ -285,7 +286,7 @@
       <p style="font-family: 'Courier New', Courier, monospace;">🎯 One chance only!</p>
     </div>
     
-    <div id="message" class="message" ></div>
+    <div id="message" class="message"></div>
   </div>
   
   <div id="cards" class="cards-container">
@@ -293,128 +294,252 @@
     <div class="card" onclick="guess(1)">?</div>
     <div class="card" onclick="guess(2)">?</div>
     <div class="card" onclick="guess(3)">?</div>
-    <!-- <div class="card" onclick="guess(4)">?</div> -->
   </div>
   
   <button class="btn" onclick="resetGame()" style="display: none;" id="resetBtn">PLAY AGAIN</button>
+
+
+  <!--   
+  <div class="log-section">
+    <h3>📊 Game Log</h3>
+    <div class="input-section">
+      <button class="btn download-btn" onclick="downloadLog()">📥 DOWNLOAD LOG</button>
+      <button class="btn" onclick="clearLog()">🗑️ CLEAR LOG</button>
+    </div>
+    <div id="logDisplay"></div>
+  </div> -->
   
-  <script>
-    let queenIndex = -1;
-    let gameActive = false;
-    let playerScore = 0;
-    let gamesPlayed = 0;
-    
-    function startGame() {
-      const nameInput = document.getElementById('playerName');
-      const playerName = nameInput.value.trim() || 'Guest';
-      document.getElementById('playerDisplay').textContent = playerName;
-      
-      queenIndex = Math.floor(Math.random() * 4);
-      gameActive = true;
-      
-      document.getElementById('message').textContent = 'Find the Queen! Click on a card.';
-      document.getElementById('message').style.background = 'rgba(0, 100, 200, 0.8)';
-      document.getElementById('resetBtn').style.display = 'none';
-      
-      // Reset cards
-      const cards = document.querySelectorAll('.card');
-      cards.forEach((card, i) => {
-        card.textContent = '?';
-        card.className = 'card';
-        card.style.pointerEvents = 'auto';
-        card.onclick = () => guess(i);
-      });
-      
-      // playSound('background-music');
-    }
-    
-    function guess(index) {
-      if (!gameActive) return;
-      
-      gameActive = false;
-      gamesPlayed++;
-      
-      const cards = document.querySelectorAll('.card');
-      cards.forEach(card => card.style.pointerEvents = 'none');
-      
-      setTimeout(() => {
-        if (index === queenIndex) {
-          playerScore += 10;
-          document.getElementById('message').textContent = `🎉 Congratulations! You found the Queen! +₹10 🎉`;
-          document.getElementById('message').style.background = 'rgba(0, 200, 0, 0.8)';
-          playSound('win-sound');
-        } else {
-          playerScore -= 10;
-          document.getElementById('message').textContent = `💔 Wrong! Queen was at position ${queenIndex + 1}. -₹10 💔`;
-          document.getElementById('message').style.background = 'rgba(200, 0, 0, 0.8)';
-          playSound('loss-sound');
-        }
-        
-        // Reveal all cards
-        cards.forEach((card, i) => {
-          card.classList.add('revealed');
-          if (i === queenIndex) {
-            card.classList.add('queen');
-            card.textContent = '';
-          } else {
-            card.classList.add('wrong');
-            card.textContent = '❌';
-          }
-        });
-        
-        // Update score display
-        document.getElementById('scoreDisplay').textContent = playerScore;
-        document.getElementById('gamesDisplay').textContent = gamesPlayed;
-        document.getElementById('resetBtn').style.display = 'block';
-        
-      }, 500);
-    }
-    
-    function resetGame() {
-      queenIndex = -1;
-      gameActive = false;
-      document.getElementById('message').textContent = '';
-      document.getElementById('resetBtn').style.display = 'none';
-      
-      const cards = document.querySelectorAll('.card');
-      cards.forEach((card, i) => {
-        card.textContent = '?';
-        card.className = 'card';
-        card.style.pointerEvents = 'none';
-        card.onclick = null;
-      });
-      
-      pauseSound('background-music');
-    }
-    
-    function playSound(soundId) {
-      try {
-        const sound = document.getElementById(soundId);
-        if (sound) {
-          sound.currentTime = 0;
-          sound.play().catch(e => console.log('Sound error:', e));
-        }
-      } catch (error) {
-        console.log('Sound playback error:', error);
-      }
-    }
-    
-    function pauseSound(soundId) {
-      try {
-        const sound = document.getElementById(soundId);
-        if (sound) {
-          sound.pause();
-        }
-      } catch (error) {
-        console.log('Sound pause error:', error);
-      }
-    }
-    
-    // Initialize game
-    document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('message').textContent = 'Enter your name and click START GAME to begin!';
-      document.getElementById('message').style.background = 'rgba(100, 100, 100, 0.8)';
+<script>
+
+let queenIndex = -1;
+let gameActive = false;
+let playerScore = 0;
+let gamesPlayed = 0;
+let currentPlayerName = '';
+
+// Hidden log management - user won't know about this
+let gameLog = [];
+let logIdCounter = 1;
+
+// Silently load existing log
+function loadLog() {
+  try {
+    const savedLog = JSON.parse(localStorage.getItem('queenGameLog') || '[]');
+    const savedCounter = parseInt(localStorage.getItem('queenGameLogCounter') || '1');
+    gameLog = savedLog;
+    logIdCounter = savedCounter;
+  } catch (error) {
+    // Silent error handling
+    gameLog = [];
+    logIdCounter = 1;
+  }
+}
+
+// Silently save log
+function saveLog() {
+  try {
+    localStorage.setItem('queenGameLog', JSON.stringify(gameLog));
+    localStorage.setItem('queenGameLogCounter', logIdCounter.toString());
+  } catch (error) {
+    // Silent error handling
+  }
+}
+
+// Hidden function to add log entry
+function addLogEntry(username, score) {
+  try {
+    const now = new Date();
+    const timeString = now.toLocaleDateString('en-GB', {
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
     });
+    
+    const entry = {
+      id: logIdCounter.toString().padStart(3, '0'),
+      username: username,
+      score: score,
+      time: timeString
+    };
+    
+    gameLog.push(entry);
+    logIdCounter++;
+    saveLog();
+  } catch (error) {
+    // Silent error handling
+  }
+}
+
+// Hidden function to save data on page unload
+function saveGameData() {
+  if (currentPlayerName && playerScore !== 0) {
+    addLogEntry(currentPlayerName, playerScore);
+  }
+}
+
+function startGame() {
+  const nameInput = document.getElementById('playerName');
+  const playerName = nameInput.value.trim();
+  
+  // Validate that user has entered a name
+  if (!playerName || playerName === '') {
+    alert('Please enter your name to start the game!');
+    nameInput.focus();
+    return;
+  }
+  
+  currentPlayerName = playerName;
+  document.getElementById('playerDisplay').textContent = playerName;
+  
+  queenIndex = Math.floor(Math.random() * 4);
+  gameActive = true;
+  
+  document.getElementById('message').textContent = 'Find the Queen! Click on a card.';
+  document.getElementById('message').style.background = 'rgba(0, 100, 200, 0.8)';
+  document.getElementById('resetBtn').style.display = 'none';
+  
+  // Reset cards
+  const cards = document.querySelectorAll('.card');
+  cards.forEach((card, i) => {
+    card.textContent = '?';
+    card.className = 'card';
+    card.style.pointerEvents = 'auto';
+    card.onclick = () => guess(i);
+  });
+}
+
+function guess(index) {
+  if (!gameActive) return;
+  
+  gameActive = false;
+  gamesPlayed++;
+  
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => card.style.pointerEvents = 'none');
+  
+  setTimeout(() => {
+    let scoreChange = 0;
+    if (index === queenIndex) {
+      scoreChange = 10;
+      playerScore += 10;
+      document.getElementById('message').textContent = `🎉 Congratulations! You found the Queen! +₹10 🎉`;
+      document.getElementById('message').style.background = 'rgba(0, 200, 0, 0.8)';
+      playSound('win-sound');
+    } else {
+      scoreChange = -10;
+      playerScore -= 10;
+      document.getElementById('message').textContent = `💔 Wrong! Queen was at position ${queenIndex + 1}. -₹10 💔`;
+      document.getElementById('message').style.background = 'rgba(200, 0, 0, 0.8)';
+      playSound('loss-sound');
+    }
+    
+    // Silently add to log after game
+    addLogEntry(currentPlayerName, scoreChange);
+    
+    // Reveal all cards
+    cards.forEach((card, i) => {
+      card.classList.add('revealed');
+      if (i === queenIndex) {
+        card.classList.add('queen');
+        card.textContent = '';
+      } else {
+        card.classList.add('wrong');
+        card.textContent = '❌';
+      }
+    });
+    
+    // Update score display
+    document.getElementById('scoreDisplay').textContent = playerScore;
+    document.getElementById('gamesDisplay').textContent = gamesPlayed;
+    document.getElementById('resetBtn').style.display = 'block';
+    
+  }, 500);
+}
+
+function resetGame() {
+  queenIndex = -1;
+  gameActive = false;
+  document.getElementById('message').textContent = '';
+  document.getElementById('resetBtn').style.display = 'none';
+  
+  const cards = document.querySelectorAll('.card');
+  cards.forEach((card, i) => {
+    card.textContent = '?';
+    card.className = 'card';
+    card.style.pointerEvents = 'none';
+    card.onclick = null;
+  });
+  
+  pauseSound('background-music');
+}
+
+function playSound(soundId) {
+  try {
+    const sound = document.getElementById(soundId);
+    if (sound) {
+      sound.currentTime = 0;
+      sound.play().catch(e => console.log('Sound error:', e));
+    }
+  } catch (error) {
+    console.log('Sound playback error:', error);
+  }
+}
+
+function pauseSound(soundId) {
+  try {
+    const sound = document.getElementById(soundId);
+    if (sound) {
+      sound.pause();
+    }
+  } catch (error) {
+    console.log('Sound pause error:', error);
+  }
+}
+
+// Initialize game
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('message').textContent = 'Enter your name and click START GAME to begin!';
+  document.getElementById('message').style.background = 'rgba(100, 100, 100, 0.8)';
+  loadLog(); // Silently load existing log data
+});
+
+// Silently save data when page is about to unload
+window.addEventListener('beforeunload', saveGameData);
+
+// Silently save data when page becomes hidden (mobile/tab switch)
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) {
+    saveGameData();
+  }
+});
+
+// Hidden developer function to view log data (only accessible via browser console)
+function viewLog() {
+  console.table(gameLog);
+}
+
+// Hidden developer function to download log (only accessible via browser console)
+function downloadLogData() {
+  if (gameLog.length === 0) {
+    console.log('No log data available');
+    return;
+  }
+  
+  const logText = gameLog.map(entry => 
+    `{id: ${entry.id}, username: "${entry.username}", score: ${entry.score > 0 ? '+' : ''}${entry.score}, time: "${entry.time}"}`
+  ).join('\n');
+  
+  const blob = new Blob([logText], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'queen_game_log.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
   </script>
 </body>
 </html>
