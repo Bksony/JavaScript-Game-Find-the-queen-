@@ -3,306 +3,207 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Find the Lady Game</title>
+  <title>Find the Queen Game</title>
   <style>
-    /* Global Styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;}
+    
     body {
       background: url(back.jpg) no-repeat center center fixed;
       background-size: cover;
       min-height: 100vh;
       font-family: 'Bradley Hand ITC', cursive;
-      overflow-x: hidden;
-    }
-
-    .container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
       padding: 20px;
+      overflow-x: hidden;
     }
-
-    /* Developer Info Styles */
-    .developer-info {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-    }
-
-    .developer-card {
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(15px);
-      border-radius: 15px;
-      padding: 15px;
-      border: 2px solid rgba(255, 215, 0, 0.6);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-      animation: developerGlow 4s infinite alternate;
-      max-width: 250px;
-    }
-
-    .developer-card h3 {
-      color: rgba(255, 215, 0, 0.9);
-      font-size: 1.1rem;
-      margin-bottom: 10px;
-      text-align: center;
-      font-family: 'Bradley Hand ITC', cursive;
-    }
-
-    .developer-card p {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 0.9rem;
-      margin: 5px 0;
-      font-family: Arial, sans-serif;
-    }
-
-    .developer-card a {
-      color: rgba(0, 255, 255, 0.9);
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    .developer-card a:hover {
-      color: rgba(255, 255, 0, 1);
-      text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
-    }
-
-    @keyframes developerGlow {
-      0% { 
-        border-color: rgba(255, 215, 0, 0.6);
-        box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
-      }
-      100% { 
-        border-color: rgba(0, 255, 255, 0.8);
-        box-shadow: 0 4px 25px rgba(0, 255, 255, 0.4);
-      }
-    }
-
-    /* Header Styles */
+    
     h1 {
-      text-align: center;
-      font-family: 'Bradley Hand ITC', cursive;
       color: rgba(255, 255, 255, 0.95);
-      font-size: clamp(2rem, 5vw, 4rem);
-      border: 8px solid rgba(186, 3, 3, 0.8);
-      border-radius: 50px;
-      padding: 20px 40px;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      border: 6px solid rgba(255, 0, 0, 0.8);
+      border-radius: 30px;
+      padding: 15px 30px;
       margin: 20px 0;
       background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(10px);
-      animation: titleGlow 3s infinite alternate;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      animation: glow 3s infinite alternate;
     }
-
-    @keyframes titleGlow {
-      0% { 
-        box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
-        border-color: rgba(255, 0, 0, 0.8);
-      }
-      25% { 
-        box-shadow: 0 0 20px rgba(0, 255, 43, 0.6);
-        border-color: rgba(0, 255, 43, 0.8);
-      }
-      50% { 
-        box-shadow: 0 0 20px rgba(17, 0, 255, 0.6);
-        border-color: rgba(17, 0, 255, 0.8);
-      }
-      75% { 
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-        border-color: rgba(255, 255, 255, 0.8);
-      }
-      100% { 
-        box-shadow: 0 0 25px rgba(255, 0, 221, 0.8);
-        border-color: rgba(255, 0, 221, 0.8);
-      }
+    
+    @keyframes glow {
+      0% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
+      50% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.6); }
+      100% { box-shadow: 0 0 20px rgba(0, 0, 255, 0.6); }
     }
-
-    /* Game Info Section */
-    .game-info {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 20px 0;
-      gap: 20px;
-    }
-
-    .note-section {
-      background: rgba(28, 18, 122, 0.4);
+    
+    .game-panel {
+      background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(15px);
-      border-radius: 25px;
-      border: 3px solid rgba(172, 255, 47, 0.5);
-      padding: 25px;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 20px 0;
+      border: 2px solid rgba(255, 215, 0, 0.6);
       max-width: 600px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      width: 100%;
     }
-
-    .note-title {
-      font-size: 2rem;
-      color: rgba(255, 255, 0, 0.9);
-      text-decoration: underline 3px rgba(255, 255, 0, 0.7);
-      margin-bottom: 15px;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .rules {
+    
+    .input-section {
       display: flex;
-      flex-direction: column;
       gap: 10px;
+      margin-bottom: 20px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
     }
-
-    .rule {
-      font-size: 1.3rem;
+    
+    input[type="text"] {
+      padding: 10px;
+      border: 2px solid rgba(255, 215, 0, 0.6);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 1rem;
+      backdrop-filter: blur(10px);
+    }
+    
+    input[type="text"]::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .score-section {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .score-item {
       color: rgba(255, 255, 255, 0.9);
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+      font-size: 1.2rem;
+      text-align: center;
       padding: 10px;
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      border-left: 4px solid rgba(172, 255, 47, 0.7);
+      border-radius: 10px;
+      min-width: 120px;
     }
-
-    /* Message Styles */
+    
+    .score-item span {
+      color: rgba(255, 215, 0, 0.9);
+      font-weight: bold;
+    }
+    
+    .rules {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .rules p {
+      margin: 5px 0;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      border-left: 3px solid rgba(172, 255, 47, 0.7);
+    }
+    
     .message {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       color: white;
-      background: rgba(255, 2, 2, 0.8);
-      padding: 15px 25px;
-      border-radius: 25px;
+      background: rgba(255, 0, 0, 0.8);
+      padding: 15px;
+      border-radius: 15px;
+      text-align: center;
+      margin: 20px 0;
+      font-weight: bold;
       min-height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      font-weight: bold;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(10px);
-      max-width: 600px;
     }
-
-    /* Button Styles */
-    .start-btn {
+    
+    .btn {
       background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(220, 220, 220, 0.8));
       border: none;
-      border-radius: 15px;
-      padding: 15px 30px;
-      font-family: 'Arial Black', Arial, sans-serif;
-      font-size: 1.2rem;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 1.1rem;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      margin: 10px;
     }
-
-    .start-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-      animation: buttonPulse 1s infinite alternate;
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
     }
-
-    .start-btn:active {
+    
+    .btn:active {
       transform: translateY(0);
     }
-
-    @keyframes buttonPulse {
-      0% { 
-        background: linear-gradient(145deg, rgba(255, 0, 0, 0.8), rgba(255, 100, 100, 0.6));
-        box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
-      }
-      25% { 
-        background: linear-gradient(145deg, rgba(0, 255, 0, 0.8), rgba(100, 255, 100, 0.6));
-        box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
-      }
-      50% { 
-        background: linear-gradient(145deg, rgba(0, 0, 255, 0.8), rgba(100, 100, 255, 0.6));
-        box-shadow: 0 0 20px rgba(0, 0, 255, 0.6);
-      }
-      100% { 
-        background: linear-gradient(145deg, rgba(255, 0, 255, 0.8), rgba(255, 100, 255, 0.6));
-        box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
-      }
-    }
-
-    /* Cards Container */
+    
     .cards-container {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 15px;
       flex-wrap: wrap;
       margin: 20px 0;
       perspective: 1000px;
     }
-
-    /* Card Styles */
+    
     .card {
-      width: 180px;
-      height: 280px;
+      width: 120px;
+      height: 180px;
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
-    }
-
-    .card:hover {
-      transform: scale(1.05) rotateY(5deg);
-    }
-
-    .card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.6s;
-      transform-style: preserve-3d;
-      border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    }
-
-    .card-front, .card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      background: linear-gradient(145deg, rgba(0, 21, 255, 0.6), rgba(0, 50, 200, 0.4));
+      border: 2px solid rgba(255, 255, 255, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 3rem;
-      font-weight: bold;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    }
-
-    .card-front {
-      background: linear-gradient(145deg, rgba(0, 21, 255, 0.6), rgba(0, 50, 200, 0.4));
+      font-size: 2.5rem;
       color: white;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(10px);
-      animation: cardGlow 4s infinite;
+      font-weight: bold;
+      animation: cardPulse 4s infinite;
     }
-
-    .card-back {
+    
+    .card:hover {
+      transform: scale(1.05);
+    }
+    
+    .card.revealed {
       background-size: cover;
       background-position: center;
-      background-repeat: no-repeat;
-      transform: rotateY(180deg);
-      border: 3px solid rgba(255, 215, 0, 0.8);
+      font-size: 0;
     }
-
-    @keyframes cardGlow {
-      0% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); }
-      25% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); }
-      50% { box-shadow: 0 0 15px rgba(0, 0, 255, 0.5); }
-      75% { box-shadow: 0 0 20px rgba(255, 255, 0, 0.5); }
-      100% { box-shadow: 0 0 25px rgba(255, 0, 255, 0.5); }
+    
+    .card.queen {
+      background-image: url(queen_wallpaper.jpg);
+      border-color: rgba(255, 215, 0, 0.8);
+      animation: celebration 1s ease-in-out;
     }
-
+    
+    .card.wrong {
+      background: rgba(255, 0, 0, 0.8);
+      font-size: 3rem;
+    }
+    
+    @keyframes cardPulse {
+      0% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+      25% { box-shadow: 0 0 15px rgba(0, 255, 0, 0.5); }
+      50% { box-shadow: 0 0 10px rgba(0, 0, 255, 0.5); }
+      75% { box-shadow: 0 0 15px rgba(255, 255, 0, 0.5); }
+      100% { box-shadow: 0 0 20px rgba(255, 0, 255, 0.5); }
+    }
+    
     @keyframes celebration {
       0% { transform: scale(1) rotate(0deg); }
       25% { transform: scale(1.1) rotate(-5deg); }
@@ -310,256 +211,208 @@
       75% { transform: scale(1.1) rotate(-3deg); }
       100% { transform: scale(1) rotate(0deg); }
     }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .developer-info {
-        position: static;
-        margin-bottom: 20px;
-      }
-      
-      .developer-card {
-        max-width: 90%;
-        margin: 0 auto;
-      }
-      
-      .container {
-        padding: 10px;
-      }
-      
-      .cards-container {
-        gap: 10px;
-      }
-      
-      .card {
-        width: 140px;
-        height: 220px;
-      }
-      
-      .note-section {
-        max-width: 90%;
-        padding: 20px;
-      }
-      
-      .rule {
-        font-size: 1.1rem;
-      }
-      
-      .message {
-        font-size: 1.2rem;
-        max-width: 90%;
-      }
+    
+    .dev-info {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      z-index: 1000;
+      max-width: 300px;
     }
-
-    @media (max-width: 480px) {
-      .cards-container {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .card {
-        width: 160px;
-        height: 240px;
-      }
+    
+    .dev-info h3 {
+      color: rgba(255, 215, 0, 0.9);
+      margin-bottom: 10px;
+    }
+    
+    .dev-info a {
+      color: rgba(0, 255, 255, 0.9);
+      text-decoration: none;
+    }
+    
+    @media (max-width: 768px) {
+      .dev-info { position: static; margin: 20px 0; }
+      .cards-container { gap: 10px; }
+      .card { width: 100px; height: 150px; font-size: 2rem; }
+      .score-section { flex-direction: column; gap: 10px; }
     }
   </style>
 </head>
 <body>
-  <audio id="win sound" src="win sound.mp3"></audio>
-  <audio id="loss sound" src="loss sound.mp3"></audio>
-  <audio id="background" src="background.mp3"></audio>
-
-      <div class="container">
-    <h1>FIND THE QUEEN</h1>
-    
-    <div class="developer-info">
-      <div class="developer-card">
-        <h3>🎮 Game Developer</h3>
-        <p><strong>Bhavik Kaladiya</strong></p>
-        <p>📱 +91 9265492946</p>
-        <p>📧 bksony894@gmail.com</p>
-        <p>🎯 <a href="https://bksony.github.io/Game-of-Mathematics-/" target="_blank">Other Games</a></p>
-      </div>
-    </div>
-    
-    <div class="game-info">
-      <div class="note-section">
-        <p class="note-title">Note:-</p>
-        <div class="rules">
-          <p class="rule">🏆 If you get your Queen you will win $20</p>
-          <p class="rule">🎯 There will be 2 attempts to find your Queen</p>
-          <p class="rule">💰 If you can not find your Queen you lose $30</p>
-        </div>
-      </div>
-      
-      <p id="message" class="message"></p>
-      
-      <button onclick="resetGame()" class="start-btn">
-        <span>START GAME</span>
-      </button>
-    </div>
-    
-    <div id="cards" class="cards-container">
-      <div class="card" onclick="guess(0)">
-        <div class="card-inner">
-          <div class="card-front"></div>
-          <div class="card-back"></div>
-        </div>
-      </div>
-      <div class="card" onclick="guess(1)">
-        <div class="card-inner">
-          <div class="card-front"></div>
-          <div class="card-back"></div>
-        </div>
-      </div>
-      <div class="card" onclick="guess(2)">
-        <div class="card-inner">
-          <div class="card-front"></div>
-          <div class="card-back"></div>
-        </div>
-      </div>
-      <div class="card" onclick="guess(3)">
-        <div class="card-inner">
-          <div class="card-front"></div>
-          <div class="card-back"></div>
-        </div>
-      </div>
-    </div>
+  <audio id="win-sound" src="win sound.mp3"></audio>
+  <audio id="loss-sound" src="loss sound.mp3"></audio>
+  <audio id="background-music" src="background.mp3" loop></audio>
+  
+  <div class="dev-info" style="font-family: 'Courier New', Courier, monospace;">
+    <h3>🎮 Developer</h3>
+    <p><strong>Bhavik Kaladiya</strong></p>
+    <p>📱 +91 9265492946</p>
+    <p>📧 bksony894@gmail.com</p>
+    <p>🎯 <a href="https://bksony.github.io/Game-of-Mathematics-/" target="_blank">Other Games</a></p>
+    <p>🎯 <a href="https://bksony.github.io/My-Web/" target="_blank">Website</a></p>
   </div>
-
+  
+  <h1>FIND THE QUEEN</h1>
+  
+  <div class="game-panel">
+    <div class="input-section">
+      <input type="text" id="playerName" placeholder="Enter your name (optional)" maxlength="20">
+      <button class="btn" onclick="startGame()">START GAME</button>
+    </div>
+    
+    <div class="score-section">
+      <div class="score-item">
+        Player: <span id="playerDisplay">Guest</span>
+      </div>
+      <div class="score-item">
+        Score: <span id="scoreDisplay">0</span>
+      </div>
+      <div class="score-item">
+        Games: <span id="gamesDisplay">0</span>
+      </div>
+    </div>
+    
+    <div class="rules">
+      <p style="font-family: 'Courier New', Courier, monospace;">🏆 Find the Queen and win ₹10</p>
+      <p style="font-family: 'Courier New', Courier, monospace;">💔 Wrong guess loses ₹10</p>
+      <p style="font-family: 'Courier New', Courier, monospace;">🎯 One chance only!</p>
+    </div>
+    
+    <div id="message" class="message" ></div>
+  </div>
+  
+  <div id="cards" class="cards-container">
+    <div class="card" onclick="guess(0)">?</div>
+    <div class="card" onclick="guess(1)">?</div>
+    <div class="card" onclick="guess(2)">?</div>
+    <div class="card" onclick="guess(3)">?</div>
+    <!-- <div class="card" onclick="guess(4)">?</div> -->
+  </div>
+  
+  <button class="btn" onclick="resetGame()" style="display: none;" id="resetBtn">PLAY AGAIN</button>
+  
   <script>
-    // Game variables
-    let ladyIndex;
-    let attempts = 0;
-    let gameStarted = false;
-
-    // Initialize the game when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        resetGame();
-    });
-
-    // Shuffle cards and set up the game
-    function shuffleCards() {
-        ladyIndex = Math.floor(Math.random() * 4);
-        const cards = document.querySelectorAll('.card');
-        
-        cards.forEach((card, index) => {
-            const cardFront = card.querySelector('.card-front');
-            const cardBack = card.querySelector('.card-back');
-            
-            // Reset card appearance
-            cardFront.textContent = '?';
-            cardFront.style.display = 'flex';
-            cardBack.style.backgroundImage = "url(king.jpg)";
-            
-            // Reset card flip
-            card.querySelector('.card-inner').style.transform = '';
-            
-            // Re-enable clicking
-            card.style.pointerEvents = 'auto';
-            card.onclick = () => guess(index);
-        });
-        
-        gameStarted = true;
+    let queenIndex = -1;
+    let gameActive = false;
+    let playerScore = 0;
+    let gamesPlayed = 0;
+    
+    function startGame() {
+      const nameInput = document.getElementById('playerName');
+      const playerName = nameInput.value.trim() || 'Guest';
+      document.getElementById('playerDisplay').textContent = playerName;
+      
+      queenIndex = Math.floor(Math.random() * 4);
+      gameActive = true;
+      
+      document.getElementById('message').textContent = 'Find the Queen! Click on a card.';
+      document.getElementById('message').style.background = 'rgba(0, 100, 200, 0.8)';
+      document.getElementById('resetBtn').style.display = 'none';
+      
+      // Reset cards
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, i) => {
+        card.textContent = '?';
+        card.className = 'card';
+        card.style.pointerEvents = 'auto';
+        card.onclick = () => guess(i);
+      });
+      
+      // playSound('background-music');
     }
-
-    // Handle card guess
+    
     function guess(index) {
-        if (!gameStarted) return;
-        
-        attempts++;
-        const messageElement = document.getElementById('message');
-        const cards = document.querySelectorAll('.card');
-        
-        // Disable further clicking
-        cards.forEach(card => {
-            card.style.pointerEvents = 'none';
-        });
-        
-        // Show results after a brief delay for suspense
-        setTimeout(() => {
-            if (index === ladyIndex && attempts === 1) {
-                messageElement.textContent = `🎉 Congratulations! You found your Queen in ${attempts} attempt. You win $20! 🎉`;
-                messageElement.style.background = 'rgba(0, 255, 0, 0.8)';
-                playSound('win sound');
-            } else {
-                messageElement.textContent = `💔 Sorry, your Sweetheart was at position ${ladyIndex + 1}. You lose $30. 💔`;
-                messageElement.style.background = 'rgba(255, 2, 2, 0.8)';
-                playSound('loss sound');
-            }
-            
-            // Reveal all cards
-            revealCards();
-        }, 500);
-        
-        gameStarted = false;
-    }
-
-    // Reveal all cards with animation
-    function revealCards() {
-        const cards = document.querySelectorAll('.card');
-        
-        cards.forEach((card, i) => {
-            const cardInner = card.querySelector('.card-inner');
-            const cardFront = card.querySelector('.card-front');
-            const cardBack = card.querySelector('.card-back');
-            
-            setTimeout(() => {
-                if (i === ladyIndex) {
-                    // Show queen
-                    cardBack.style.backgroundImage = "url(queen_wallpaper.jpg)";
-                    cardFront.style.display = 'none';
-                } else {
-                    // Show X for wrong cards
-                    cardFront.textContent = '❌';
-                    cardFront.style.background = 'rgba(255, 0, 0, 0.8)';
-                }
-                
-                // Flip card
-                cardInner.style.transform = 'rotateY(180deg)';
-                
-                // Add celebration effect for queen
-                if (i === ladyIndex) {
-                    card.style.animation = 'celebration 1s ease-in-out';
-                }
-            }, i * 200); // Stagger the reveal
-        });
-    }
-
-    // Reset the game
-    function resetGame() {
-        attempts = 0;
-        gameStarted = false;
-        
-        const messageElement = document.getElementById('message');
-        messageElement.textContent = '';
-        messageElement.style.background = 'rgba(255, 2, 2, 0.8)';
-        
-        // Reset cards
-        const cards = document.querySelectorAll('.card');
-        cards.forEach(card => {
-            card.style.animation = '';
-            card.style.pointerEvents = 'auto';
-        });
-        
-        // Start new game
-        shuffleCards();
-    }
-
-    // Play sound with error handling
-    function playSound(soundId) {
-        try {
-            const sound = document.getElementById(soundId);
-            if (sound) {
-                sound.currentTime = 0; // Reset to beginning
-                sound.play().catch(e => {
-                    console.log('Could not play sound:', e);
-                });
-            }
-        } catch (error) {
-            console.log('Sound playback error:', error);
+      if (!gameActive) return;
+      
+      gameActive = false;
+      gamesPlayed++;
+      
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => card.style.pointerEvents = 'none');
+      
+      setTimeout(() => {
+        if (index === queenIndex) {
+          playerScore += 10;
+          document.getElementById('message').textContent = `🎉 Congratulations! You found the Queen! +₹10 🎉`;
+          document.getElementById('message').style.background = 'rgba(0, 200, 0, 0.8)';
+          playSound('win-sound');
+        } else {
+          playerScore -= 10;
+          document.getElementById('message').textContent = `💔 Wrong! Queen was at position ${queenIndex + 1}. -₹10 💔`;
+          document.getElementById('message').style.background = 'rgba(200, 0, 0, 0.8)';
+          playSound('loss-sound');
         }
+        
+        // Reveal all cards
+        cards.forEach((card, i) => {
+          card.classList.add('revealed');
+          if (i === queenIndex) {
+            card.classList.add('queen');
+            card.textContent = '';
+          } else {
+            card.classList.add('wrong');
+            card.textContent = '❌';
+          }
+        });
+        
+        // Update score display
+        document.getElementById('scoreDisplay').textContent = playerScore;
+        document.getElementById('gamesDisplay').textContent = gamesPlayed;
+        document.getElementById('resetBtn').style.display = 'block';
+        
+      }, 500);
     }
+    
+    function resetGame() {
+      queenIndex = -1;
+      gameActive = false;
+      document.getElementById('message').textContent = '';
+      document.getElementById('resetBtn').style.display = 'none';
+      
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, i) => {
+        card.textContent = '?';
+        card.className = 'card';
+        card.style.pointerEvents = 'none';
+        card.onclick = null;
+      });
+      
+      pauseSound('background-music');
+    }
+    
+    function playSound(soundId) {
+      try {
+        const sound = document.getElementById(soundId);
+        if (sound) {
+          sound.currentTime = 0;
+          sound.play().catch(e => console.log('Sound error:', e));
+        }
+      } catch (error) {
+        console.log('Sound playback error:', error);
+      }
+    }
+    
+    function pauseSound(soundId) {
+      try {
+        const sound = document.getElementById(soundId);
+        if (sound) {
+          sound.pause();
+        }
+      } catch (error) {
+        console.log('Sound pause error:', error);
+      }
+    }
+    
+    // Initialize game
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('message').textContent = 'Enter your name and click START GAME to begin!';
+      document.getElementById('message').style.background = 'rgba(100, 100, 100, 0.8)';
+    });
   </script>
 </body>
 </html>
